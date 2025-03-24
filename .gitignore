@@ -1,2 +1,5 @@
 /.mypy_cache
 /venv
+apps/blog/__pycache__/__init__.cpython-310.pyc
+**/__pycache__/
+__pycache__/
