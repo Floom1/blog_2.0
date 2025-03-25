@@ -35,11 +35,12 @@ class Category(MPTTModel):
         return self.title
 
 
-class Post(models.Model):
-    """
-    Модель постов для нашего блога
-    """
+class PostManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().select_related('author', 'category').filter(status='published')
 
+
+class Post(models.Model):
     STATUS_OPTIONS = (
         ('published', 'Опубликовано'),
         ('draft', 'Черновик')
@@ -64,6 +65,9 @@ class Post(models.Model):
     updater = models.ForeignKey(to=User, verbose_name='Обновил', on_delete=models.SET_NULL, null=True,
                                 related_name='updater_posts', blank=True)
     fixed = models.BooleanField(verbose_name='Прикреплено', default=False)
+
+    objects=models.Manager()
+    custom = PostManager()
 
     def save(self, *args, **kwargs):
         self.slug = unique_slugify(self, self.title, self.slug)
